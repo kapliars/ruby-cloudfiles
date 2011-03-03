@@ -71,7 +71,7 @@ module CloudFiles
       begin
         response = self.connection.cfreq("HEAD",@cdnmgmthost,@cdnmgmtpath,@cdnmgmtport,@cdnmgmtscheme)
         @cdn_enabled = ((response["x-cdn-enabled"] || "").downcase == "true") ? true : false
-      rescue ConnectionException
+      rescue 
         @cdn_enabled = false
       end
       @cdn_ttl = @cdn_enabled ? response["x-ttl"].to_i : false
