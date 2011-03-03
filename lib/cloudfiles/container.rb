@@ -68,8 +68,12 @@ module CloudFiles
       @count = response["x-container-object-count"].to_i
 
       # Get the CDN-related details
-      response = self.connection.cfreq("HEAD",@cdnmgmthost,@cdnmgmtpath,@cdnmgmtport,@cdnmgmtscheme)
-      @cdn_enabled = ((response["x-cdn-enabled"] || "").downcase == "true") ? true : false
+      begin
+        response = self.connection.cfreq("HEAD",@cdnmgmthost,@cdnmgmtpath,@cdnmgmtport,@cdnmgmtscheme)
+        @cdn_enabled = ((response["x-cdn-enabled"] || "").downcase == "true") ? true : false
+      rescue ConnectionException
+        @cdn_enabled = false
+      end
       @cdn_ttl = @cdn_enabled ? response["x-ttl"].to_i : false
       @cdn_url = @cdn_enabled ? response["x-cdn-uri"] : false
       @user_agent_acl = response["x-user-agent-acl"]
