@@ -15,7 +15,13 @@ module CloudFiles
       hdrhash = { "X-Auth-User" => connection.authuser, "X-Auth-Key" => connection.authkey }
       begin
         server             = get_server(connection, parsed_authurl)
-        server.use_ssl     = true
+        if connection.authurl=~/^https/
+           server.use_ssl = true
+        else
+           server.use_ssl = false
+        end
+        puts "Use ssl "
+        puts server.use_ssl
         server.verify_mode = OpenSSL::SSL::VERIFY_NONE
         server.start
       rescue
